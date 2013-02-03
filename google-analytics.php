@@ -3,8 +3,8 @@
 Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/google-analytics/
 Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
-Version: 4.2
-Author: Denis de Bernardy
+Version: 4.3
+Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: google-analytics
 Domain Path: /lang
@@ -73,8 +73,8 @@ class google_analytics {
 		
 		$domainParts = self::getDomainParts();
 		$domainRegex = '[^/]+://[^/]*' . implode('\\.', array_map('addslashes', $domainParts)) . '(/|$)';
-		$ga_domain = ''; # experimental
-		if ( GA_DOMAIN )
+		$ga_domain = '';
+		if ( GA_DOMAIN )   // TODO.   Add config option to enable tracking
 			$ga_domain = "\n_gaq.push(['_setDomainName', '" . addslashes(GA_DOMAIN) . "']);";
 		
 		echo <<<EOS
@@ -85,8 +85,8 @@ window.google_analytics_regexp = new RegExp("$domainRegex", 'i');
 <script type="text/javascript">
 
 var _gaq = _gaq || [];
-_gaq.push(['_setAccount', '$uacct']);
-_gaq.push(['_trackPageview']);$ga_domain
+_gaq.push(['_setAccount', '$uacct']);$ga_domain
+_gaq.push(['_trackPageview']);
 
 (function() {
   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -177,14 +177,15 @@ try { $tracker } catch(err) {}
 
 EOS;
 	} # track_page()
-	
-	
-	/**
-	 * track_media()
-	 *
-	 * @param $args
-	 * @return $args
-	 **/
+
+
+    /**
+     * track_media()
+     *
+     * @param $flashvars
+     * @internal param $args
+     * @return $args
+     */
 
 	function track_media($flashvars) {
 		if ( GA_DOMAIN )
@@ -205,7 +206,7 @@ EOS;
 	/**
 	 * get_uacct()
 	 *
-	 * @return void
+	 * @return array
 	 **/
 
 	function get_uacct() {
@@ -219,7 +220,7 @@ EOS;
 	 * @return array $options
 	 **/
 
-	function get_options() {
+	static function get_options() {
 		static $o;
 		
 		if ( !is_admin() && isset($o) )

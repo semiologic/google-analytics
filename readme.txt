@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic
 Requires at least: 2.8
-Tested up to: 3.2.1
+Tested up to: 3.5
 Stable tag: trunk
 
 Integrates Google Analytics on your site.
@@ -55,13 +55,28 @@ This is built into Google Analytics. Edit your site's profile in GA, and add the
 
 = Domain-wide tracking =
 
-This feature is still experimental, but nonetheless worth a note. If you wish to track your domain and all of its subdomains in a single report, add a define in your wp-config.php file as follows.
+If you wish to track your domain and all of its subdomains in a single report, add a define in your wp-config.php file as follows.
 
-    define('GA_DOMAIN', '.example.com');
+    define('GA_DOMAIN', 'example.com');
 
 At the time of writing, doing so will turn off media usage tracking. Everything else works fine.
 
 To make the best of the resulting reports, customize the way your reports are displayed, in your main domain's profile, so as to be able to distinguish your various subdomains.
+
+Suppose you have the following URLs that you want to track as a single entity:
+
+To track the following 3 domains under example-petstore.com GA account
+
+    www.example-petstore.com
+    dogs.example-petstore.com
+    cats.example-petstore.com
+
+You would add
+
+    define('GA_DOMAIN', 'example-petstore.com');
+
+to your wp-config.php file
+
 
 = Custom event tracking =
 
@@ -75,10 +90,15 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 == Installation ==
 
 1. Upload the plugin folder to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
+2. Activate the plugin through the 'Plugins' menu in WordPress
 
 
 == Change Log ==
+
+= 4.3 =
+
+- WP 3.5 compat
+- Changed sequence of subdomain tracking javascript code now that feature is in production
 
 = 4.2 =
 

@@ -1,4 +1,4 @@
-=== Semiologic Google Analytics ===
+=== Google Analytics ===
 Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic
@@ -94,10 +94,6 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
-
-= 4.3.1 =
-
-- Renamed to Semiologic Google Analytics to avoid conflict with new WP plugin in repository
 
 = 4.3 =
 

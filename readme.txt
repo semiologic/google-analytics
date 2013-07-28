@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic, google, google analytics, analytics
 Requires at least: 2.8
-Tested up to: 3.5.1
+Tested up to: 3.6
 Stable tag: trunk
 
 Integrates Google Analytics on your site.
@@ -48,6 +48,7 @@ The Newsletter Form plugin makes GA track subscription form usage as GA events. 
 Page not found errors on your site are tracked as /404/?page=...&from=...
 
 Clicks on outbound links are tracked as /outbound/?to=...
+as well as Outbound Links events
 
 = Search tracking =
 
@@ -55,11 +56,7 @@ This is built into Google Analytics. Edit your site's profile in GA, and add the
 
 = Domain-wide tracking =
 
-If you wish to track your domain and all of its subdomains in a single report, add a define in your wp-config.php file as follows.
-
-    define('GA_DOMAIN', 'example.com');
-
-At the time of writing, doing so will turn off media usage tracking. Everything else works fine.
+If you wish to track your domain and all of its subdomains in a single report, you would check the 'Track Subdomains' setting for all domains.
 
 To make the best of the resulting reports, customize the way your reports are displayed, in your main domain's profile, so as to be able to distinguish your various subdomains.
 
@@ -71,16 +68,14 @@ To track the following 3 domains under example-petstore.com GA account
     dogs.example-petstore.com
     cats.example-petstore.com
 
-You would add
+You would set your user ID for dogs.example-petstore.com and cats.example-petstore.com to the same Google user ID you used for www.example-petstore.com.
 
-    define('GA_DOMAIN', 'example-petstore.com');
-
-to your wp-config.php file
+You then would check the 'Track Subdomains' setting in your Google Analytics Settings screen for all 3 of the domains.
 
 
 = Custom event tracking =
 
-The GA lastly allows to track custom-defined events, in case the need arises. Doing so is relatively easy, too: simply add a ga_event class to your <a>, <div> or <form> tag of interest.
+The GA lastly allows to track custom-defined events, in case the need arises. Doing so is relatively easy, too: simply add a <b>ga_event</b> class to your <a>, <div> or <form> tag of interest.
 
 = Help Me! =
 
@@ -94,6 +89,16 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 5.0 =
+
+- Added option to turn on cross-domain tracking
+- Outbound links are now tracked as Events as well as Pageviews
+- File downloads, mailto: and tel: links now tracked as events
+- Added Keyword Ranking tracking code per [A New Method to Track Keyword Ranking using Google Analytics](http://cutroni.com/blog/2013/01/14/a-new-method-to-track-keyword-ranking-using-google-analytics/)
+- Internal links that start with http:// were incorrectly being tracked as outbound links
+- Fixed conflict with wp-polls that caused the tracking code to be included twice
+- Updated help links in the Settings screen to latest Google help information
 
 = 4.3 =
 

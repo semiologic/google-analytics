@@ -25,9 +25,11 @@ class google_analytics_admin {
 		} else {
 			$uacct = '';
 		}
-		
-		update_option('google_analytics', $uacct);
-		
+
+      	$subdomains = isset($_POST['subdomains']);
+
+      	update_option('google_analytics', compact('uacct', 'subdomains'));
+
 		echo '<div class="updated fade">' . "\n"
 			. '<p>'
 				. '<strong>'
@@ -45,10 +47,10 @@ class google_analytics_admin {
 	 **/
 
 	function edit_options() {
-		$uacct = google_analytics::get_options();
-		
-		if ( !$uacct )
-			$uacct = __('Your Account ID', 'google-analytics');
+		$options = google_analytics::get_options();
+
+        if ( empty($options['uacct']) )
+            $options['uacct'] = __('Your Account ID', 'google-analytics');
 		
 		echo '<div class="wrap">' . "\n"
 			. '<form method="post" action="">' . "\n";
@@ -71,17 +73,34 @@ class google_analytics_admin {
 			. '</th>'
 			. '<td>'
 			. '<p>'
-			. __('Paste the user ID from the <b>ga.js</b> script from <a href="http://analytics.google.com">Google analytics</a> into the following textarea (<a href="http://www.google.com/support/googleanalytics/bin/answer.py?answer=55603">where do I find it?</a>):', 'google-analytics')
+			. __('Paste the user ID from the <b>ga.js</b> script from <a href="http://www.google.com/analytics/" target="_blank" >Google analytics</a> into the following textarea (<a href="https://support.google.com/analytics/answer/1008080?hl=en" target="_blank">where do I find it?</a>):', 'google-analytics')
 			. '</p>' ."\n"
 			. '<input type="text" name="ga_script"'
-					. ' class="widefat code"'
-					. ' value="' . esc_attr($uacct) . '"'
-					. ' />'
+                . ' class="widefat code"'
+                . ' value="' . esc_attr($options['uacct']) . '"'
+                . ' />'
 			. '<p>'
 			. __('Tip: in <code>var pageTracker = _gat._getTracker("UA-123456-1");</code>, your ID is <code>UA-123456-1</code>.', 'google-analytics')
 			. '</p>'
 			. '</td>'
 			. '</tr>';
+
+        echo '<tr>' . "\n"
+            . '<th scope="row">'
+            . __('Track Subdomains', 'google-analytics')
+            . '</th>' . "\n"
+            . '<td>'
+            . '<label>'
+            . '<input type="checkbox" name="subdomains"'
+                . checked($options['subdomains'], true, false)
+                . ' />'
+            . '&nbsp;'
+            . __('Track all subdomains in a single report - i.e. www.example.com, forums.example.com, store.example.com', 'google-analytics')
+            . '</label>'
+         	. '<br />' . "\n"
+         	. __('Note: If you have WordPress and Semiologic installed on these other subdomains, you would use the same Google Analytics User ID for all subdomains and set this checkbox.  If you wish to have each subdomain tracked as different sites, leave unchecked.', 'google-analytics')
+            . '</td>' . "\n"
+            . '</tr>' . "\n";
 		
 		echo "</table>\n";
 		
@@ -116,7 +135,7 @@ class google_analytics_admin {
 			. '</th>'
 			. '<td>'
 			. '<p>'
-			. __('To enable AdSense revenue tracking using Google Analytics, simply <a href="http://www.google.com/support/googleanalytics/bin/answer.py?hl=en&answer=55507">declare this site for AdSense tracking</a> in <a href="http://analytics.google.com">Google Analytics\'s administration panels</a>. (The needed code is inserted automatically by the plugin.)', 'google-analytics')
+			. __('To enable AdSense revenue tracking using Google Analytics, simply <a href="https://support.google.com/adsense/answer/2495976" target="_blank">Link an AdSense account to an Analytics account</a>. (The needed code is inserted automatically by the plugin.)', 'google-analytics')
 			. '</p>' . "\n"
 			. '</td>'
 			. '</tr>' . "\n";
@@ -145,6 +164,12 @@ class google_analytics_admin {
 			. '<li>'
 			. sprintf(__('Poll usage when using the Poll Widget plugin that comes with <a href="%s">Semiologic Pro</a>.', 'google-analytics'), 'http://www.getsemiologic.com')
 			. '</li>' . "\n"
+            . '<li>'
+            . sprintf(__('Keyword Ranking Tracking per <a href="%s" target="_blank">A New Method to Track Keyword Ranking using Google Analytics</a>.', 'google-analytics'), 'http://cutroni.com/blog/2013/01/14/a-new-method-to-track-keyword-ranking-using-google-analytics/')
+            . '</li>' . "\n"
+            . '<li>'
+            . __('Clicks on email links, telephone numbers prepended with tel:, file downloads, and outgoing links.', 'google-analytics')
+            . '</li>' . "\n"
 			. '</ul>' . "\n"
 			. '</td>'
 			. '</tr>' . "\n";

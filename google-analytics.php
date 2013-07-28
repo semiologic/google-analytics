@@ -3,7 +3,7 @@
 Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/google-analytics/
 Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
-Version: 4.3
+Version: 5.0 dev
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: google-analytics
@@ -43,7 +43,7 @@ class google_analytics {
 	 **/
 
 	function getDomainParts() {
-		$domain = GA_DOMAIN ? GA_DOMAIN : get_option('home');
+		$domain = get_option('home');
 		$domain = parse_url($domain);
 		$domain = $domain['host'];
 		$domain = preg_replace("/^www\./i", '', $domain);
@@ -69,13 +69,16 @@ class google_analytics {
 	 **/
 
 	function header_scripts() {
-		$uacct = google_analytics::get_options();
+        $options = google_analytics::get_options();
+        $uacct = $options['uacct'];
+        $useSubdomains = $options['subdomains'];
 		
 		$domainParts = self::getDomainParts();
+        $domain = implode( '.', $domainParts);
 		$domainRegex = '[^/]+://[^/]*' . implode('\\.', array_map('addslashes', $domainParts)) . '(/|$)';
 		$ga_domain = '';
-		if ( GA_DOMAIN )   // TODO.   Add config option to enable tracking
-			$ga_domain = "\n_gaq.push(['_setDomainName', '" . addslashes(GA_DOMAIN) . "']);";
+		if ( $useSubdomains )
+			$ga_domain = "\n_gaq.push(['_setDomainName', '" . $domain . "']);";
 		
 		echo <<<EOS
 <script type="text/javascript">
@@ -95,13 +98,14 @@ _gaq.push(['_trackPageview']);
 })();
 
 </script>
+
 EOS;
-		
+
 		if ( !sem_google_analytics_debug && ( !$uacct || current_user_can('publish_posts') || current_user_can('publish_pages') ) )
 			return;
 		
 		$folder = plugin_dir_url(__FILE__);
-		wp_enqueue_script('google_analytics', $folder . 'js/scripts.js', array('jquery'), '20090927', true);
+		wp_enqueue_script('google_analytics', $folder . 'js/scripts.js', array('jquery'), '20130727', true);
 		
 		wp_localize_script('google_analytics', 'google_analyticsL10n', array(
 			'ad_event' => __('Ad Unit', 'google-analytics'),
@@ -125,7 +129,7 @@ EOS;
 	 **/
 
 	function footer_scripts() {
-		$uacct = google_analytics::get_options();
+		$uacct = google_analytics::get_uacct();
 		
 		if ( !sem_google_analytics_debug && !$uacct )
 			return;
@@ -149,8 +153,9 @@ EOS;
 	 **/
 
 	function track_page() {
-		$uacct = google_analytics::get_options();
-		
+		$uacct = google_analytics::get_uacct();
+
+
 		if ( !$uacct ) {
 			echo "\n" . '<!-- '
 				. __('Configure Google Analytics under Settings / Google Analytics', 'google-analytics')
@@ -188,9 +193,6 @@ EOS;
      */
 
 	function track_media($flashvars) {
-		if ( GA_DOMAIN )
-			return $flashvars;
-		
 		if ( !current_user_can('publish_posts') && !current_user_can('publish_pages') ) {
 			$uacct = google_analytics::get_uacct();
 			if ( $uacct ) {
@@ -210,7 +212,9 @@ EOS;
 	 **/
 
 	function get_uacct() {
-		return google_analytics::get_options();
+		$o = google_analytics::get_options();
+        return $o['uacct'];
+
 	} # get_uacct()
 	
 	
@@ -227,11 +231,8 @@ EOS;
 			return $o;
 		
 		$o = get_option('google_analytics');
-		
-		if ( is_array($o) ) {
-			$o = $o['uacct'];
-			update_option('google_analytics', $o);
-		} elseif ( $o === false ) {
+
+        if ( $o === false || !is_array($o)) {
 			$o = google_analytics::init_options();
 		}
 		
@@ -246,19 +247,26 @@ EOS;
 	 **/
 
 	function init_options() {
-		$o = get_option('sem_google_analytics_params');
+        $defaults = array(
+            'uacct' => 'Your Account ID',
+            'subdomains' => false,
+      	);
+
+        $o = get_option('google_analytics');
 		
-		if ( $o !== false && is_string($o['script'])
-			&& preg_match("/_uacct\s*=\s*\"([^\"]+)\"\s*;/", $o['script'], $match)
-			) {
-			$o = $match[1];
-			delete_option('sem_google_analytics_params');
-		} else {
-			$o = '';
-		}
-		
-		$o = wp_parse_args($o, array('uacct' => false));
-		
+        if ( !$o ) {
+    		$o  = $defaults;
+        }
+        elseif ( !is_array($o) ) {
+            $uacct = $o;
+            unset($o);
+            $o['uacct'] = $uacct;
+            $o['subdomains'] = false;
+
+            extract($o, EXTR_SKIP);
+         	$o = compact(array_keys($defaults));
+        }
+
 		update_option('google_analytics', $o);
 		
 		return $o;
@@ -291,7 +299,7 @@ add_action('load-settings_page_google-analytics', 'google_analytics_admin');
 
 
 if ( !is_admin() ) {
-	add_action('wp_print_scripts', array('google_analytics', 'header_scripts'));
+	add_action('wp_enqueue_scripts', array('google_analytics', 'header_scripts'));
 	add_action('wp_footer', array('google_analytics', 'footer_scripts'), 20);
 	add_action('wp_footer', array('google_analytics', 'track_page'), 1000); // after script manager
 	add_action('mediacaster_audio', array('google_analytics', 'track_media'));

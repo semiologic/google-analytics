@@ -85,16 +85,91 @@ jQuery(document).ready(function() {
 			});
 		}
 	});
-	
-	jQuery('a').click(function(e) {
-		var t = jQuery(this);
-		if ( !t.hasClass('ga_event') && !t.hasClass('download_event') ) {
-			var href = jQuery(this).attr('href');
-			if ( href && href.match(/^https?:/i) && !href.match(window.google_analytics_regexp) ) {
-				try {
-					window._gaq.push(['_trackPageview', '/outbound/?to=' + href]);
-				} catch ( err ) {}
-			}
-		}
-	});
+
+    var baseHref = '';
+    if (jQuery('base').attr('href') != undefined)
+        baseHref = jQuery('base').attr('href');
+
+    jQuery('a').click(function(e) {
+   		var t = jQuery(this);
+        if (!(!t.hasClass('ga_event') && !t.hasClass('download_event'))) {
+        } else {
+            var filetypes = /\.(zip|exe|dmg|pdf|doc.*|xls.*|ppt.*|mp3|mp4|rtf|txt|rar|wma|mov|avi|wmv|flv|wav)/i;
+            var href = (typeof(t.attr('href')) != 'undefined' ) ? t.attr('href') : "";
+            var track = true;
+            var isExternal = function(url) {
+                return !(location.href.replace("http://", "").replace("https://", "").split("/")[0] === url.replace("http://", "").replace("https://", "").split("/")[0]);
+            };
+            var ev = {};
+            ev.value = 0;
+            ev.non_i = false;
+            if (href.match(/^mailto:/i)) {
+                ev.category = "email";
+                ev.action = "click";
+                ev.label = href.replace(/^mailto:/i, '');
+                ev.loc = href;
+            }
+            else if (filetypes.test(href)) {
+                var extension = (/[.]/.exec(href)) ? /[^.]+$/.exec(href) : undefined;
+                ev.category = "download";
+                ev.action = "click-" + extension[0];
+                ev.label = href.replace(/ /g, "-");
+                ev.loc = baseHref + href;
+            }
+            else if (href.match(/^https?:/i) && isExternal(href) && !href.match(/window.google_analytics_regexp/)) {
+                ev.category = "external";
+                ev.action = "click";
+                ev.label = href.replace(/^https?:\/\//i, '');
+                ev.non_i = true;
+                ev.loc = href;
+                try {
+                    window._gaq.push(['_trackPageview', '/outbound/?to=' + href]);
+                } catch (err) {
+                }
+            }
+            else if (href.match(/^tel:/i)) {
+                ev.category = "telephone";
+                ev.action = "click";
+                ev.label = href.replace(/^tel:/i, '');
+                ev.loc = href;
+            }
+            else
+                track = false;
+
+            if (track) {
+                try {
+                    _gaq.push(['_trackEvent', ev.category.toLowerCase(), ev.action.toLowerCase(), ev.label.toLowerCase(), ev.value, ev.non_i]);
+                    /*                    if ( t.attr('target') == undefined || t.attr('target').toLowerCase() != '_blank') {
+                     setTimeout(function() { location.href = ev.loc; }, 400);
+                     return false;
+                     }
+                     */
+                } catch (err) {
+                }
+            }
+
+        }
+   	});
+
+
+    //  This is Rank Tracker code.  It will track the organic page rank of keywords.
+    // A New Method to Track Keyword Ranking using Google Analytics
+    // http://cutroni.com/blog/2013/01/14/a-new-method-to-track-keyword-ranking-using-google-analytics/
+
+    if (document.referrer.match(/google\.com/gi) && document.referrer.match(/cd/gi)) {
+      var myString = document.referrer;
+      var r        = myString.match(/cd=(.*?)&/);
+      var rank     = parseInt(r[1]);
+      var kw       = myString.match(/q=(.*?)&/);
+
+      if (kw[1].length > 0) {
+        var keyWord  = decodeURI(kw[1]);
+      } else {
+        keyWord = "(not provided)";
+      }
+
+      var p        = document.location.pathname;
+      _gaq.push(['_trackEvent', 'RankTracker', keyWord, p, rank, true]);
+    }
+
 });

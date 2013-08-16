@@ -94,7 +94,7 @@ jQuery(document).ready(function() {
    		var t = jQuery(this);
         if (!(!t.hasClass('ga_event') && !t.hasClass('download_event'))) {
         } else {
-            var filetypes = /\.(zip|exe|dmg|pdf|doc.*|xls.*|ppt.*|mp3|mp4|rtf|txt|rar|wma|mov|avi|wmv|flv|wav)/i;
+            var filetypes = /\.(zip|exe|dmg|pdf|doc.*|xls.*|ppt.*|mpp|mp3|mp4|m4a|rtf|txt|rar|tar|gzip|gz|wma|mov|avi|wmv|flv|swf|wav)/i;
             var href = (typeof(t.attr('href')) != 'undefined' ) ? t.attr('href') : "";
             var track = true;
             var isExternal = function(url) {
@@ -104,20 +104,20 @@ jQuery(document).ready(function() {
             ev.value = 0;
             ev.non_i = false;
             if (href.match(/^mailto:/i)) {
-                ev.category = "email";
+                ev.category = "Email";
                 ev.action = "click";
                 ev.label = href.replace(/^mailto:/i, '');
                 ev.loc = href;
             }
             else if (filetypes.test(href)) {
                 var extension = (/[.]/.exec(href)) ? /[^.]+$/.exec(href) : undefined;
-                ev.category = "download";
+                ev.category = "Download";
                 ev.action = "click-" + extension[0];
                 ev.label = href.replace(/ /g, "-");
                 ev.loc = baseHref + href;
             }
             else if (href.match(/^https?:/i) && isExternal(href) && !href.match(/window.google_analytics_regexp/)) {
-                ev.category = "external";
+                ev.category = "Outgoing Link";
                 ev.action = "click";
                 ev.label = href.replace(/^https?:\/\//i, '');
                 ev.non_i = true;
@@ -128,7 +128,7 @@ jQuery(document).ready(function() {
                 }
             }
             else if (href.match(/^tel:/i)) {
-                ev.category = "telephone";
+                ev.category = "Telephone";
                 ev.action = "click";
                 ev.label = href.replace(/^tel:/i, '');
                 ev.loc = href;
@@ -138,7 +138,7 @@ jQuery(document).ready(function() {
 
             if (track) {
                 try {
-                    _gaq.push(['_trackEvent', ev.category.toLowerCase(), ev.action.toLowerCase(), ev.label.toLowerCase(), ev.value, ev.non_i]);
+                    _gaq.push(['_trackEvent', ev.category, ev.action, ev.label, ev.value, ev.non_i]);
                     /*                    if ( t.attr('target') == undefined || t.attr('target').toLowerCase() != '_blank') {
                      setTimeout(function() { location.href = ev.loc; }, 400);
                      return false;

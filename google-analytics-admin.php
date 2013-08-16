@@ -6,7 +6,14 @@
  **/
 
 class google_analytics_admin {
-	/**
+    /**
+     * google_analytics_admin()
+     */
+    function google_analytics_admin() {
+        add_action('settings_page_google-analytics', array($this, 'save_options'), 0);
+    } #google_analytics_admin
+
+    /**
 	 * save_options()
 	 *
 	 * @return void
@@ -46,7 +53,7 @@ class google_analytics_admin {
 	 * @return void
 	 **/
 
-	function edit_options() {
+	static function edit_options() {
 		$options = google_analytics::get_options();
 
         if ( empty($options['uacct']) )
@@ -124,7 +131,7 @@ class google_analytics_admin {
 	 * @return void
 	 **/
 
-	function crash_course() {
+    static function crash_course() {
 		echo '<h3>' . __('Quick Reference', 'google-analytics') . '</h3>' . "\n";
 		
 		echo '<table class="form-table">' . "\n";
@@ -189,5 +196,6 @@ class google_analytics_admin {
 	} # crash_course()
 } # google_analytics_admin
 
-add_action('settings_page_google-analytics', array('google_analytics_admin', 'save_options'), 0);
+$google_analytics_admin = new google_analytics_admin();
+
 ?>

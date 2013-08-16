@@ -3,7 +3,7 @@
 Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/google-analytics/
 Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
-Version: 5.0 dev
+Version: 5.0
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: google-analytics
@@ -36,7 +36,23 @@ if ( !defined('GA_DOMAIN') )
  **/
 
 class google_analytics {
-	/**
+
+    /**
+     * google_analytics()
+     */
+    function google_analytics() {
+        if ( !is_admin() ) {
+        	add_action('wp_enqueue_scripts', array($this, 'header_scripts'));
+        	add_action('wp_footer', array($this, 'footer_scripts'), 20);
+        	add_action('wp_footer', array($this, 'track_page'), 1000); // after script manager
+        	add_action('mediacaster_audio', array($this, 'track_media'));
+        	add_action('mediacaster_video', array($this, 'track_media'));
+        } else {
+        	add_action('admin_menu', array($this, 'admin_menu'));
+        }
+    } # google_analytics()
+
+    /**
 	 * domain name parts to be tracked
 	 *
 	 * @return array domain name parts
@@ -45,7 +61,14 @@ class google_analytics {
 	function getDomainParts() {
 		$domain = get_option('home');
 		$domain = parse_url($domain);
-		$domain = $domain['host'];
+        if ($domain == false)
+            return array();
+        elseif (is_array($domain)) {
+            if (isset($domain['host']))
+                $domain = $domain['host'];
+            else
+                return array();
+        }
 		$domain = preg_replace("/^www\./i", '', $domain);
 		$domain = explode('.', $domain);
 		if ( count($domain) > 2 ) {
@@ -224,7 +247,7 @@ EOS;
 	 * @return array $options
 	 **/
 
-	static function get_options() {
+    static function get_options() {
 		static $o;
 		
 		if ( !is_admin() && isset($o) )
@@ -297,14 +320,6 @@ function google_analytics_admin() {
 
 add_action('load-settings_page_google-analytics', 'google_analytics_admin');
 
+$google_analytics = new google_analytics();
 
-if ( !is_admin() ) {
-	add_action('wp_enqueue_scripts', array('google_analytics', 'header_scripts'));
-	add_action('wp_footer', array('google_analytics', 'footer_scripts'), 20);
-	add_action('wp_footer', array('google_analytics', 'track_page'), 1000); // after script manager
-	add_action('mediacaster_audio', array('google_analytics', 'track_media'));
-	add_action('mediacaster_video', array('google_analytics', 'track_media'));
-} else {
-	add_action('admin_menu', array('google_analytics', 'admin_menu'));
-}
 ?>

@@ -75,7 +75,7 @@ You then would check the 'Track Subdomains' setting in your Google Analytics Set
 
 = Custom event tracking =
 
-The GA lastly allows to track custom-defined events, in case the need arises. Doing so is relatively easy, too: simply add a <b>ga_event</b> class to your <a>, <div> or <form> tag of interest.
+The GA lastly allows to track custom-defined events, in case the need arises. Doing so is relatively easy, too: simply add a ga_event class to your <a>, <div> or <form> tag of interest.
 
 = Help Me! =
 
@@ -99,6 +99,8 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 - Internal links that start with http:// were incorrectly being tracked as outbound links
 - Fixed conflict with wp-polls that caused the tracking code to be included twice
 - Updated help links in the Settings screen to latest Google help information
+- WP 3.6 compat
+- PHP 5.4 compat
 
 = 4.3 =
 

@@ -156,7 +156,7 @@ jQuery(document).ready(function() {
     // A New Method to Track Keyword Ranking using Google Analytics
     // http://cutroni.com/blog/2013/01/14/a-new-method-to-track-keyword-ranking-using-google-analytics/
 
-    if (document.referrer.match(/google\.com/gi) && document.referrer.match(/cd/gi)) {
+    if (document.referrer.match(/google\./gi) && document.referrer.match(/cd/gi)) {
       var myString = document.referrer;
       var r        = myString.match(/cd=(.*?)&/);
       var rank     = parseInt(r[1]);

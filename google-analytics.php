@@ -3,20 +3,19 @@
 Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/google-analytics/
 Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
-Version: 5.0
+Version: 5.1
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: google-analytics
 Domain Path: /lang
+License: Dual licensed under the MIT and GPLv2 licenses
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
-
-http://www.mesoconcepts.com/license/
+This software is copyright Denis de Bernardy & Mike Koepke, and is distributed under the terms of the MIT and GPLv2 licenses.
 **/
 
 
@@ -40,7 +39,7 @@ class google_analytics {
     /**
      * google_analytics()
      */
-    function google_analytics() {
+	public function __construct() {
         if ( !is_admin() ) {
         	add_action('wp_enqueue_scripts', array($this, 'header_scripts'));
         	add_action('wp_footer', array($this, 'footer_scripts'), 20);
@@ -128,7 +127,7 @@ EOS;
 			return;
 		
 		$folder = plugin_dir_url(__FILE__);
-		wp_enqueue_script('google_analytics', $folder . 'js/scripts.js', array('jquery'), '20130727', true);
+		wp_enqueue_script('google_analytics', $folder . 'js/scripts.js', array('jquery'), '20140107', true);
 		
 		wp_localize_script('google_analytics', 'google_analyticsL10n', array(
 			'ad_event' => __('Ad Unit', 'google-analytics'),
@@ -255,7 +254,7 @@ EOS;
 		
 		$o = get_option('google_analytics');
 
-        if ( $o === false || !is_array($o)) {
+        if ( $o === false || !is_array($o) || !isset($o['subdomains'])) {
 			$o = google_analytics::init_options();
 		}
 		
@@ -321,5 +320,3 @@ function google_analytics_admin() {
 add_action('load-settings_page_google-analytics', 'google_analytics_admin');
 
 $google_analytics = new google_analytics();
-
-?>

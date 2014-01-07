@@ -9,7 +9,7 @@ class google_analytics_admin {
     /**
      * google_analytics_admin()
      */
-    function google_analytics_admin() {
+	public function __construct() {
         add_action('settings_page_google-analytics', array($this, 'save_options'), 0);
     } #google_analytics_admin
 
@@ -63,8 +63,6 @@ class google_analytics_admin {
 			. '<form method="post" action="">' . "\n";
 		
 		wp_nonce_field('google_analytics');
-		
-		screen_icon();
 		
 		echo '<h2>' . __('Google Analytics Settings', 'google-analytics') . '</h2>' . "\n";
 		
@@ -197,5 +195,3 @@ class google_analytics_admin {
 } # google_analytics_admin
 
 $google_analytics_admin = new google_analytics_admin();
-
-?>

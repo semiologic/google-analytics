@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic, google, google analytics, analytics
 Requires at least: 2.8
-Tested up to: 3.6
+Tested up to: 3.8
 Stable tag: trunk
 
 Integrates Google Analytics on your site.
@@ -89,6 +89,11 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 5.1 =
+
+- Perform Keyword Rank Tracking for other Google sites and not just google.com searches.
+- WP 3.8 compat
 
 = 5.0 =
 

@@ -6,12 +6,65 @@
  **/
 
 class google_analytics_admin {
-    /**
-     * google_analytics_admin()
-     */
+	/**
+	 * Plugin instance.
+	 *
+	 * @see get_instance()
+	 * @type object
+	 */
+	protected static $instance = NULL;
+
+	/**
+	 * URL to this plugin's directory.
+	 *
+	 * @type string
+	 */
+	public $plugin_url = '';
+
+	/**
+	 * Path to this plugin's directory.
+	 *
+	 * @type string
+	 */
+	public $plugin_path = '';
+
+	/**
+	 * Access this plugin’s working instance
+	 *
+	 * @wp-hook plugins_loaded
+	 * @return  object of this class
+	 */
+	public static function get_instance()
+	{
+		NULL === self::$instance and self::$instance = new self;
+
+		return self::$instance;
+	}
+
+
+	/**
+	 * Constructor.
+	 *
+	 *
+	 */
+
 	public function __construct() {
-        add_action('settings_page_google-analytics', array($this, 'save_options'), 0);
+		$this->plugin_url    = plugins_url( '/', __FILE__ );
+		$this->plugin_path   = plugin_dir_path( __FILE__ );
+
+		$this->init();
     } #google_analytics_admin
+
+	/**
+	 * init()
+	 *
+	 * @return void
+	 **/
+
+	function init() {
+		// more stuff: register actions and filters
+		add_action('settings_page_google-analytics', array($this, 'save_options'), 0);
+	}
 
     /**
 	 * save_options()
@@ -33,7 +86,7 @@ class google_analytics_admin {
 			$uacct = '';
 		}
 
-      	$subdomains = isset($_POST['subdomains']);
+      	$subdomains = isset($_POST['subdomains']) ? $_POST['subdomains'] : false;
 
       	update_option('google_analytics', compact('uacct', 'subdomains'));
 
@@ -194,4 +247,4 @@ class google_analytics_admin {
 	} # crash_course()
 } # google_analytics_admin
 
-$google_analytics_admin = new google_analytics_admin();
+$google_analytics_admin = google_analytics_admin::get_instance();

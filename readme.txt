@@ -90,6 +90,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 5.2 =
+
+- Code refactoring
+
 = 5.1 =
 
 - Perform Keyword Rank Tracking for other Google sites and not just google.com searches.

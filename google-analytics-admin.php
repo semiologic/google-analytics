@@ -150,7 +150,7 @@ class google_analytics_admin {
             . '<td>'
             . '<label>'
             . '<input type="checkbox" name="subdomains"'
-                . checked($options['subdomains'], true, false)
+                . checked((bool) $options['subdomains'], true, false)
                 . ' />'
             . '&nbsp;'
             . __('Track all subdomains in a single report - i.e. www.example.com, forums.example.com, store.example.com', 'google-analytics')

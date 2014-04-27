@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic, google, google analytics, analytics
 Requires at least: 2.8
-Tested up to: 3.8
+Tested up to: 3.9
 Stable tag: trunk
 
 Integrates Google Analytics on your site.
@@ -92,7 +92,9 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 = 5.2 =
 
+- Use minimized javascript for better site performance
 - Code refactoring
+- WP 3.9 compat
 
 = 5.1 =
 

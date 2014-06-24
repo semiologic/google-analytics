@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Google Analytics package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Google Analytics 5.2 dev\n"
+"Project-Id-Version: Google Analytics 6.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/google-analytics\n"
-"POT-Creation-Date: 2014-04-27 21:01:41+00:00\n"
+"POT-Creation-Date: 2014-06-24 17:48:14+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,96 +12,131 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: google-analytics-admin.php:96
+#: google-analytics-admin.php:100
 msgid "Settings saved."
 msgstr ""
 
-#: google-analytics-admin.php:113
+#: google-analytics-admin.php:117
 msgid "Your Account ID"
 msgstr ""
 
-#: google-analytics-admin.php:120
+#: google-analytics-admin.php:124
 msgid "Google Analytics Settings"
 msgstr ""
 
-#: google-analytics-admin.php:123
-msgid "Google Analytics Id"
-msgstr ""
-
-#: google-analytics-admin.php:130
-msgid "GA Script"
+#: google-analytics-admin.php:127
+msgid "Google Analytics ID"
 msgstr ""
 
 #: google-analytics-admin.php:134
-msgid ""
-"Paste the user ID from the <b>ga.js</b> script from <a href=\"http://www."
-"google.com/analytics/\" target=\"_blank\" >Google analytics</a> into the "
-"following textarea (<a href=\"https://support.google.com/analytics/"
-"answer/1008080?hl=en\" target=\"_blank\">where do I find it?</a>):"
+msgid "Universal Analytics"
 msgstr ""
 
-#: google-analytics-admin.php:141
+#: google-analytics-admin.php:142
 msgid ""
-"Tip: in <code>var pageTracker = _gat._getTracker(\"UA-123456-1\");</code>, "
-"your ID is <code>UA-123456-1</code>."
+"Track site using the new Universal Analytics tracking code (analytics.js)"
 msgstr ""
 
-#: google-analytics-admin.php:148
+#: google-analytics-admin.php:150
+msgid "GA Script"
+msgstr ""
+
+#: google-analytics-admin.php:154
+msgid ""
+"Paste the User ID from the <b>analytics.js</b> or <b>ga.js</b> script from "
+"<a href=\"http://www.google.com/analytics/\" target=\"_blank\" >Google "
+"Analytics</a> into the following textarea (<a href=\"https://support.google."
+"com/analytics/answer/1008080?hl=en\" target=\"_blank\">where do I find it?</"
+"a>):"
+msgstr ""
+
+#: google-analytics-admin.php:161
+msgid ""
+"<i>If using the new Universal Analytics code (analytics.js) then in "
+"<code>ga('create', 'UA-123456-1', 'example.com');</code>, your ID is "
+"<code>UA-123456-1</code>.</i>"
+msgstr ""
+
+#: google-analytics-admin.php:164
+msgid ""
+"<i>If using the classic Google Analytics code (ga.js) then in <code>var "
+"pageTracker = _gat._getTracker(\"UA-123456-1\");</code>, your ID is "
+"<code>UA-123456-1</code>.</i>"
+msgstr ""
+
+#: google-analytics-admin.php:171
 msgid "Track Subdomains"
 msgstr ""
 
-#: google-analytics-admin.php:156
+#: google-analytics-admin.php:179
 msgid ""
 "Track all subdomains in a single report - i.e. www.example.com, forums."
 "example.com, store.example.com"
 msgstr ""
 
-#: google-analytics-admin.php:159
+#: google-analytics-admin.php:183
 msgid ""
-"Note: If you have WordPress and Semiologic installed on these other "
+"<i><b>Note</b>: If you have WordPress and Semiologic installed on "
 "subdomains, you would use the same Google Analytics User ID for all "
 "subdomains and set this checkbox.  If you wish to have each subdomain "
-"tracked as different sites, leave unchecked."
+"tracked as a different site, leave unchecked.</i>"
 msgstr ""
 
-#: google-analytics-admin.php:167
+#: google-analytics-admin.php:190
+msgid "Enable Display Tracking"
+msgstr ""
+
+#: google-analytics-admin.php:198
+msgid ""
+"Enable Display Advertising Features in Google Analytics, such as "
+"Remarketing, Demographics and Interest Reporting."
+msgstr ""
+
+#: google-analytics-admin.php:202
+msgid ""
+"<i><b>Note</b>: See <a href=\"https://support.google.com/analytics/"
+"answer/3450482\" target=\"_blank\">Learn more about Display Advertising "
+"Features in Google Analytics</a> for more information on this feature.</i>"
+msgstr ""
+
+#: google-analytics-admin.php:211
 msgid "Save Changes"
 msgstr ""
 
-#: google-analytics-admin.php:186
+#: google-analytics-admin.php:230
 msgid "Quick Reference"
 msgstr ""
 
-#: google-analytics-admin.php:192
+#: google-analytics-admin.php:236
 msgid "AdSense Revenue Tracking"
 msgstr ""
 
-#: google-analytics-admin.php:196
+#: google-analytics-admin.php:240
 msgid ""
 "To enable AdSense revenue tracking using Google Analytics, simply <a href="
 "\"https://support.google.com/adsense/answer/2495976\" target=\"_blank\">Link "
-"an AdSense account to an Analytics account</a>. (The needed code is inserted "
-"automatically by the plugin.)"
+"an AdSense account to an Analytics account</a> (The needed code is inserted "
+"automatically by the plugin)."
 msgstr ""
 
-#: google-analytics-admin.php:203
+#: google-analytics-admin.php:247
 msgid "Event Tracking"
 msgstr ""
 
-#: google-analytics-admin.php:207
+#: google-analytics-admin.php:251
 msgid ""
 "The Google Analytics plugin allows you to track special events. Support for "
 "the following is built-in:"
 msgstr ""
 
-#: google-analytics-admin.php:211
+#: google-analytics-admin.php:255
 msgid ""
 "Newsletter sign-ups when using the <a href=\"%s\">Newsletter Manager</a> "
 "plugin. Visitors are additionally segmented automatically on a successful "
 "signup if they're redirected on a page on this site."
 msgstr ""
 
-#: google-analytics-admin.php:214
+#: google-analytics-admin.php:258
 msgid ""
 "Clicks on ad units that were inserted using the <a href=\"%s\">Ad Manager</"
 "a> plugin. It will additionally tell you the <strong>cumulative</strong> "
@@ -109,96 +144,84 @@ msgid ""
 "works with ads that do not rely on iFrames."
 msgstr ""
 
-#: google-analytics-admin.php:217
-msgid ""
-"Media player usage and file downloads that were inserted using the <a href="
-"\"%s\">Mediacaster</a> plugin."
-msgstr ""
-
-#: google-analytics-admin.php:220
+#: google-analytics-admin.php:261
 msgid ""
 "Contact Form submissions when using the <a href=\"%s\">Contact Form</a> "
 "plugin."
 msgstr ""
 
-#: google-analytics-admin.php:223
-msgid ""
-"Poll usage when using the Poll Widget plugin that comes with <a href=\"%s"
-"\">Semiologic Pro</a>."
-msgstr ""
-
-#: google-analytics-admin.php:226
+#: google-analytics-admin.php:267
 msgid ""
 "Keyword Ranking Tracking per <a href=\"%s\" target=\"_blank\">A New Method "
 "to Track Keyword Ranking using Google Analytics</a>."
 msgstr ""
 
-#: google-analytics-admin.php:229
+#: google-analytics-admin.php:270
 msgid ""
 "Clicks on email links, telephone numbers prepended with tel:, file "
 "downloads, and outgoing links."
 msgstr ""
 
-#: google-analytics-admin.php:237
+#: google-analytics-admin.php:278
 msgid "Special Users"
 msgstr ""
 
-#: google-analytics-admin.php:241
+#: google-analytics-admin.php:282
 msgid "Authors, editors and site admins are not tracked when logged in."
 msgstr ""
 
-#. #-#-#-#-#  google-analytics.pot (Google Analytics 5.2 dev)  #-#-#-#-#
+#. #-#-#-#-#  google-analytics.pot (Google Analytics 6.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: google-analytics-info.php:2 google-analytics.php:386
-#: google-analytics.php:387
+#: google-analytics-info.php:2 google-analytics.php:485
+#: google-analytics.php:486
 msgid "Google Analytics"
 msgstr ""
 
-#: google-analytics.php:213
+#: google-analytics.php:298
 msgid "Ad Unit"
 msgstr ""
 
-#: google-analytics.php:214
+#: google-analytics.php:299
 msgid "File"
 msgstr ""
 
-#: google-analytics.php:215
+#: google-analytics.php:300
 msgid "Audio"
 msgstr ""
 
-#: google-analytics.php:216
+#: google-analytics.php:301
 msgid "Video"
 msgstr ""
 
-#: google-analytics.php:217
+#: google-analytics.php:302
 msgid "Sign Up"
 msgstr ""
 
-#: google-analytics.php:218
+#: google-analytics.php:303
 msgid "Custom"
 msgstr ""
 
-#: google-analytics.php:219
+#: google-analytics.php:304
 msgid "Click"
 msgstr ""
 
-#: google-analytics.php:220
+#: google-analytics.php:305
 msgid "Download"
 msgstr ""
 
-#: google-analytics.php:221
+#: google-analytics.php:306
 msgid "Submit"
 msgstr ""
 
-#: google-analytics.php:222
+#: google-analytics.php:307
 msgid "Success"
 msgstr ""
 
-#: google-analytics.php:263
+#: google-analytics.php:347
 msgid "Configure Google Analytics under Settings / Google Analytics"
 msgstr ""
 
-#: google-analytics.php:268
+#: google-analytics.php:352
 msgid "Google Analytics Notice: Authors, Editors and Admins are not tracked"
 msgstr ""
 
@@ -217,5 +240,5 @@ msgid "Denis de Bernardy & Mike Koepke"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "http://www.getsemiologic.com"
+msgid "http://www.semiologic.com"
 msgstr ""

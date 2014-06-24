@@ -1,8 +1,8 @@
 === Google Analytics ===
 Contributors: Denis-de-Bernardy, Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
-Tags: semiologic, google, google analytics, analytics
-Requires at least: 2.8
+Tags: semiologic, google, google analytics, analytics, universal analytics, event tracking
+Requires at least: 3.3
 Tested up to: 3.9
 Stable tag: trunk
 
@@ -20,6 +20,11 @@ To make use of the plugin, browse Settings / Google Analytics and follow the ins
 Note that site authors are not tracked so as to not pollute your stats.
 
 This plugin contrasts with a number of similar WordPress plugins, in the amount of effort that was put into making it easy to use, and into integrating other plugins so you can make the best of your stats.
+
+= Universal Analytics =
+
+Google has been working on an updated version of their analytics tracking software and recently took it out of beta and into full production.
+In doing so they have deprecated the classic Google Analytics tracking code and want all customers to use the newer code that offers more capabilities.  This plugin now supports both but it is recommended you use the Universal Analytics going forward.
 
 = AdSense integration =
 
@@ -89,6 +94,13 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 6.0 =
+
+- Support new Universal Analytics tracking code.
+- Adds option to turn on Display Tracking when using Universal Analytics.
+- Adsense tracking is only available when using a Semiologic theme.
+- Fix Event Tracking failing to track some events with some caching plugins that concat javascript files.
 
 = 5.2 =
 

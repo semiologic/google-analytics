@@ -88,7 +88,11 @@ class google_analytics_admin {
 
       	$subdomains = isset($_POST['subdomains']) ? $_POST['subdomains'] : false;
 
-      	update_option('google_analytics', compact('uacct', 'subdomains'));
+		$universal_analytics = isset($_POST['universal_analytics']) ? $_POST['universal_analytics'] : false;
+
+		$displayTracking = isset($_POST['displayTracking']) ? $_POST['displayTracking'] : false;
+
+      	update_option('google_analytics', compact('uacct', 'subdomains', 'universal_analytics', 'displayTracking'));
 
 		echo '<div class="updated fade">' . "\n"
 			. '<p>'
@@ -120,25 +124,44 @@ class google_analytics_admin {
 		echo '<h2>' . __('Google Analytics Settings', 'google-analytics') . '</h2>' . "\n";
 		
 		echo '<h3>'
-			. __('Google Analytics Id', 'google-analytics')
+			. __('Google Analytics ID', 'google-analytics')
 			. '</h3>' . "\n";
 		
 		echo '<table class="form-table">' . "\n";
-		
+
+		echo '<tr valign="top">' . "\n"
+			. '<th scope="row">'
+			. __('Universal Analytics', 'google-analytics')
+			. '</th>' . "\n"
+			. '<td>'
+			. '<label>'
+			. '<input type="checkbox" name="universal_analytics"'
+			    . checked((bool) $options['universal_analytics'], true, false)
+			    . ' />'
+			. '&nbsp;'
+			. __('Track site using the new Universal Analytics tracking code (analytics.js)', 'google-analytics')
+			. '</label>'
+			. '<br />' . "\n"
+			. '</td>' . "\n"
+			. '</tr>' . "\n";
+
 		echo '<tr valign="top">'
 			. '<th scope="row">'
 			. __('GA Script', 'google-analytics')
 			. '</th>'
 			. '<td>'
 			. '<p>'
-			. __('Paste the user ID from the <b>ga.js</b> script from <a href="http://www.google.com/analytics/" target="_blank" >Google analytics</a> into the following textarea (<a href="https://support.google.com/analytics/answer/1008080?hl=en" target="_blank">where do I find it?</a>):', 'google-analytics')
+			. __('Paste the User ID from the <b>analytics.js</b> or <b>ga.js</b> script from <a href="http://www.google.com/analytics/" target="_blank" >Google Analytics</a> into the following textarea (<a href="https://support.google.com/analytics/answer/1008080?hl=en" target="_blank">where do I find it?</a>):', 'google-analytics')
 			. '</p>' ."\n"
 			. '<input type="text" name="ga_script"'
                 . ' class="widefat code"'
                 . ' value="' . esc_attr($options['uacct']) . '"'
                 . ' />'
 			. '<p>'
-			. __('Tip: in <code>var pageTracker = _gat._getTracker("UA-123456-1");</code>, your ID is <code>UA-123456-1</code>.', 'google-analytics')
+			. __("<i>If using the new Universal Analytics code (analytics.js) then in <code>ga('create', 'UA-123456-1', 'example.com');</code>, your ID is <code>UA-123456-1</code>.</i>", 'google-analytics')
+			. '</p>'
+			. '<p>'
+			. __('<i>If using the classic Google Analytics code (ga.js) then in <code>var pageTracker = _gat._getTracker("UA-123456-1");</code>, your ID is <code>UA-123456-1</code>.</i>', 'google-analytics')
 			. '</p>'
 			. '</td>'
 			. '</tr>';
@@ -156,10 +179,31 @@ class google_analytics_admin {
             . __('Track all subdomains in a single report - i.e. www.example.com, forums.example.com, store.example.com', 'google-analytics')
             . '</label>'
          	. '<br />' . "\n"
-         	. __('Note: If you have WordPress and Semiologic installed on these other subdomains, you would use the same Google Analytics User ID for all subdomains and set this checkbox.  If you wish to have each subdomain tracked as different sites, leave unchecked.', 'google-analytics')
+	        . '<p>'
+         	. __('<i><b>Note</b>: If you have WordPress and Semiologic installed on subdomains, you would use the same Google Analytics User ID for all subdomains and set this checkbox.  If you wish to have each subdomain tracked as a different site, leave unchecked.</i>', 'google-analytics')
+	        . '</p>'
             . '</td>' . "\n"
             . '</tr>' . "\n";
-		
+
+		echo '<tr>' . "\n"
+			. '<th scope="row">'
+			. __('Enable Display Tracking', 'google-analytics')
+			. '</th>' . "\n"
+			. '<td>'
+			. '<label>'
+			. '<input type="checkbox" name="displayTracking"'
+			  . checked((bool) $options['displayTracking'], true, false)
+			  . ' />'
+			. '&nbsp;'
+			. __('Enable Display Advertising Features in Google Analytics, such as Remarketing, Demographics and Interest Reporting.', 'google-analytics')
+			. '</label>'
+			. '<br />' . "\n"
+			. '<p>'
+			. __('<i><b>Note</b>: See <a href="https://support.google.com/analytics/answer/3450482" target="_blank">Learn more about Display Advertising Features in Google Analytics</a> for more information on this feature.</i>', 'google-analytics')
+			. '</p>'
+			. '</td>' . "\n"
+			. '</tr>' . "\n";
+
 		echo "</table>\n";
 		
 		echo '<div class="submit">'
@@ -193,7 +237,7 @@ class google_analytics_admin {
 			. '</th>'
 			. '<td>'
 			. '<p>'
-			. __('To enable AdSense revenue tracking using Google Analytics, simply <a href="https://support.google.com/adsense/answer/2495976" target="_blank">Link an AdSense account to an Analytics account</a>. (The needed code is inserted automatically by the plugin.)', 'google-analytics')
+			. __('To enable AdSense revenue tracking using Google Analytics, simply <a href="https://support.google.com/adsense/answer/2495976" target="_blank">Link an AdSense account to an Analytics account</a> (The needed code is inserted automatically by the plugin).', 'google-analytics')
 			. '</p>' . "\n"
 			. '</td>'
 			. '</tr>' . "\n";
@@ -214,15 +258,12 @@ class google_analytics_admin {
 			. sprintf(__('Clicks on ad units that were inserted using the <a href="%s">Ad Manager</a> plugin. It will additionally tell you the <strong>cumulative</strong> number of times each ad unit was clicked by that visitor. Note: This only works with ads that do not rely on iFrames.', 'google-analytics'), 'http://www.semiologic.com/software/ad-manager/')
 			. '</li>' . "\n"
 			. '<li>'
-			. sprintf(__('Media player usage and file downloads that were inserted using the <a href="%s">Mediacaster</a> plugin.', 'google-analytics'), 'http://www.semiologic.com/software/mediacaster/')
-			. '</li>' . "\n"
-			. '<li>'
 			. sprintf(__('Contact Form submissions when using the <a href="%s">Contact Form</a> plugin.', 'google-analytics'), 'http://www.semiologic.com/software/contact-form/')
 			. '</li>' . "\n"
-			. '<li>'
+/*			. '<li>'
 			. sprintf(__('Poll usage when using the Poll Widget plugin that comes with <a href="%s">Semiologic Pro</a>.', 'google-analytics'), 'http://www.getsemiologic.com')
 			. '</li>' . "\n"
-            . '<li>'
+*/            . '<li>'
             . sprintf(__('Keyword Ranking Tracking per <a href="%s" target="_blank">A New Method to Track Keyword Ranking using Google Analytics</a>.', 'google-analytics'), 'http://cutroni.com/blog/2013/01/14/a-new-method-to-track-keyword-ranking-using-google-analytics/')
             . '</li>' . "\n"
             . '<li>'

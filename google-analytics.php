@@ -3,9 +3,9 @@
 Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/google-analytics/
 Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
-Version: 5.2
+Version: 6.0
 Author: Denis de Bernardy & Mike Koepke
-Author URI: http://www.getsemiologic.com
+Author URI: http://www.semiologic.com
 Text Domain: google-analytics
 Domain Path: /lang
 License: Dual licensed under the MIT and GPLv2 licenses
@@ -33,6 +33,9 @@ if ( !defined('GA_DOMAIN') )
  **/
 
 class google_analytics {
+
+	protected $use_universal = false;
+
 	/**
 	 * Plugin instance.
 	 *
@@ -99,6 +102,11 @@ class google_analytics {
 		$this->load_language( 'google-analytics' );
 
 		add_action( 'plugins_loaded', array ( $this, 'init' ) );
+
+		$options = google_analytics::get_options();
+		if ( isset( $options['universal_analytics']) && (bool) $options['universal_analytics'] )
+			$this->use_universal = true;
+
     } # google_analytics()
 
 
@@ -179,16 +187,50 @@ class google_analytics {
         $domain = implode( '.', $domainParts);
 		$domainRegex = '[^/]+://[^/]*' . implode('\\.', array_map('addslashes', $domainParts)) . '(/|$)';
 		$ga_domain = '';
-		if ( $useSubdomains )
-			$ga_domain = "\n_gaq.push(['_setDomainName', '" . $domain . "']);";
-		
-		echo <<<EOS
+
+		// if doing development
+		if ( $domain == 'localhost')
+			$domain = 'none';
+		else {
+			if ( $useSubdomains && !$this->use_universal ) {
+				$ga_domain = "\n_gaq.push(['_setDomainName', '" . $domain . "']);";
+				$ga_domain .= "\n_gaq.push(['_setAllowLinker', true]);";
+			}
+			else
+				$domain = 'auto';
+		}
+
+		$ga_displayTracking = '';
+		if ( $options['displayTracking'] && $this->use_universal ) {
+			$ga_displayTracking = "ga('require', 'displayfeatures');";
+		}
+
+		if ( $this->use_universal ) {
+			$gacode = <<<EOS
 <script type="text/javascript">
-window.google_analytics_uacct = "$uacct";
-window.google_analytics_regexp = new RegExp("$domainRegex", 'i');
+	window.google_analytics_uacct = "$uacct";
+	window.google_analytics_regexp = new RegExp("$domainRegex", 'i');
 </script>
 <script type="text/javascript">
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
+   ga('create', '$uacct', '$domain');
+   $ga_displayTracking
+   ga('send', 'pageview');
+ </script>
+
+EOS;
+		}
+		else {
+		$gacode = <<<EOS
+<script type="text/javascript">
+	window.google_analytics_uacct = "$uacct";
+	window.google_analytics_regexp = new RegExp("$domainRegex", 'i');
+</script>
+<script type="text/javascript">
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '$uacct']);$ga_domain
 _gaq.push(['_trackPageview']);
@@ -198,18 +240,23 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-
 </script>
 
 EOS;
+		}
+
+		echo $gacode;
 
 		if ( !sem_google_analytics_debug && ( !$uacct || current_user_can('publish_posts') || current_user_can('publish_pages') ) )
 			return;
 
-		$analytics_js = ( WP_DEBUG ? 'scripts.min.js' : 'scripts.js' );
-		wp_enqueue_script('google_analytics', plugins_url( '/js/' . $analytics_js, __FILE__), array('jquery'), '20140107', true);
+//		$analytics_js = ( WP_DEBUG ? 'scripts.min.js' : 'scripts.js' );
+		$analytics_js = 'scripts.js';
+		if ( $this->use_universal )
+			$analytics_js = 'ua-' . $analytics_js;
+		wp_enqueue_script('google_analytics', plugins_url( '/js/' . $analytics_js, __FILE__), array('jquery'), '20140618', true);
 
-		
+/*
 		wp_localize_script('google_analytics', 'google_analyticsL10n', array(
 			'ad_event' => __('Ad Unit', 'google-analytics'),
 			'file_event' => __('File', 'google-analytics'),
@@ -223,6 +270,7 @@ EOS;
 			'success_event' => __('Success', 'google-analytics'),
 			'l10n_print_after' => 'try{convertEntities(google_analyticsL10n);}catch(e){};'
 		));
+*/
 	} # header_scripts()
 	
 	/**
@@ -232,10 +280,11 @@ EOS;
 	 **/
 
 	function footer_scripts() {
-		$uacct = google_analytics::get_uacct();
-		
-		if ( !sem_google_analytics_debug && !$uacct )
-			return;
+		if ( $this->use_universal == false ) {
+			$uacct = google_analytics::get_uacct();
+
+			if ( !sem_google_analytics_debug && !$uacct )
+				return;
 		
 echo <<<EOS
 
@@ -244,11 +293,45 @@ try { var pageTracker = _gat._getTracker("$uacct");} catch(err) {}
 </script>
 
 EOS;
-		
+		}
+
+		$ad_event = __('Ad Unit', 'google-analytics');
+		$file_event = __('File', 'google-analytics');
+		$audio_event = __('Audio', 'google-analytics');
+		$video_event = __('Video', 'google-analytics');
+		$signup_event = __('Sign Up', 'google-analytics');
+		$custom_event = __('Custom', 'google-analytics');
+		$click_event = __('Click', 'google-analytics');
+		$download_event = __('Download', 'google-analytics');
+		$submit_event = __('Submit', 'google-analytics');
+		$success_event = __('Success', 'google-analytics');
+		$l10n_print_after = 'try{convertEntities(google_analyticsL10n);}catch(e){};';
+
+echo <<<EOS
+
+<script type='text/javascript'>
+/* <![CDATA[ */
+var google_analyticsL10n = {
+	"ad_event":"$ad_event",
+	"file_event":"$file_event",
+	"audio_event":"$audio_event",
+	"video_event":"$video_event",
+	"signup_event":"$signup_event",
+	"custom_event":"$custom_event",
+	"click_event":"$click_event",
+	"download_event":"$download_event",
+	"submit_event":"$submit_event",
+	"success_event":"$success_event"
+	};
+$l10n_print_after;
+/* ]]> */
+</script>
+
+EOS;
+
 		do_action('google_analytics');
 	} # footer_scripts()
-	
-	
+
 	/**
 	 * track_page()
 	 *
@@ -270,17 +353,26 @@ EOS;
 				. ' -->' . "\n";
 			return;
 		}
-		
-		if ( is_404() ) {
-			$tracker = '_gaq.push(["_trackPageview", "/404/?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer]);';
-		} else {
-			$tracker = "_gaq.push(['_trackPageview']);";
+
+		if ( $this->use_universal ) {
+			if ( is_404() ) {
+				$tracker = 'ga("send", "pageview", "/404/?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer);';
+			} else {
+				$tracker = "ga('send', 'pageview');";
+			}
+		}
+		else {
+			if ( is_404() ) {
+				$tracker = '_gaq.push(["_trackPageview", "/404/?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer]);';
+			} else {
+				$tracker = "_gaq.push(['_trackPageview']);";
+			}
 		}
 		
 		echo <<<EOS
 
 <script type="text/javascript">
-try { $tracker } catch(err) {}
+	$tracker
 </script>
 
 EOS;
@@ -335,7 +427,7 @@ EOS;
 		
 		$o = get_option('google_analytics');
 
-        if ( $o === false || !is_array($o) || !isset($o['subdomains'])) {
+        if ( $o === false || !is_array($o) || !isset($o['subdomains']) || !isset($o['universal_analytics']) ) {
 			$o = google_analytics::init_options();
 		}
 		
@@ -349,10 +441,12 @@ EOS;
 	 * @return array $options
 	 **/
 
-	function init_options() {
+	static function init_options() {
         $defaults = array(
             'uacct' => 'Your Account ID',
             'subdomains' => false,
+	        'universal_analytics' => true,
+	        'displayTracking' => false,
       	);
 
         $o = get_option('google_analytics');
@@ -365,10 +459,14 @@ EOS;
             unset($o);
             $o['uacct'] = $uacct;
             $o['subdomains'] = false;
+	        $o['universal_analytics'] = true;
+	        $o['displayTracking'] = false;
 
             extract($o, EXTR_SKIP);
          	$o = compact(array_keys($defaults));
         }
+		else
+			$o = wp_parse_args($o, $defaults);
 
 		update_option('google_analytics', $o);
 		

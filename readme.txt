@@ -40,10 +40,6 @@ The Ad Manager plugin makes GA track any click on its ad widgets as GA events, p
 
 The Contact Form plugin makes GA track contact form usage as GA events.
 
-= Mediacaster integration =
-
-The Mediacaster plugin makes GA track file downloads and media player usage (play, stop, completed video or podcast, and so on) as GA events.
-
 = Newsletter Manager integration =
 
 The Newsletter Form plugin makes GA track subscription form usage as GA events. It will additionally segment users who subscribe to your mailing lists, allow you to track what they do once subscribed in a convenient report.

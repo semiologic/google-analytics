@@ -1,9 +1,9 @@
 === Google Analytics ===
 Contributors: Denis-de-Bernardy, Mike_Koepke
-Donate link: http://www.semiologic.com/partners/
+Donate link: https://www.semiologic.com/donate/
 Tags: semiologic, google, google analytics, analytics, universal analytics, event tracking
 Requires at least: 3.3
-Tested up to: 4.0
+Tested up to: 4.3
 Stable tag: trunk
 
 Integrates Google Analytics on your site.
@@ -90,6 +90,11 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 6.2 =
+
+- WP 4.3 compat
+- Tested against PHP 5.6
 
 = 6.1 =
 

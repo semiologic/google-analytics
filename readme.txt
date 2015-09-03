@@ -91,6 +91,10 @@ The [Semiologic Support Page](https://www.semiologic.com/support/) is the best p
 
 == Change Log ==
 
+= 6.2.1 =
+
+- Had inclusion of minified js reversed in production/ mode.  doh!
+
 = 6.2 =
 
 - WP 4.3 compat

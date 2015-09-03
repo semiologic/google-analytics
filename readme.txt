@@ -80,7 +80,7 @@ The GA lastly allows to track custom-defined events, in case the need arises. Do
 
 = Help Me! =
 
-The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues.
+The [Semiologic Support Page](https://www.semiologic.com/support/) is the best place to report issues.
 
 
 == Installation ==
